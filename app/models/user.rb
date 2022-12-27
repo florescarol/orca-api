@@ -7,9 +7,9 @@ class User < ApplicationRecord
 
   before_create -> { self.username = self.username.strip.downcase }
 
-  def generate_remember_token!
-    token = SecureRandom.urlsafe_base64
-    Digest::SHA1.hexdigest(token)
+  def generate_remember_token!(password:)
+    token = Digest::SHA1.hexdigest(SecureRandom.urlsafe_base64)
+    self.update!(remember_token: token, password: password)
   end
 
 end
