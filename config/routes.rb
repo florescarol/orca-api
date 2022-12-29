@@ -6,5 +6,7 @@ Rails.application.routes.draw do
 
   resources :categories, only: [:show, :update, :create]
 
+  resources :payment_methods, only: [:show, :update, :create]
+
   root "teste#index"
 end
