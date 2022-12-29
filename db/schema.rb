@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_27_223034) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_28_151341) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "category_groups", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "category_type", null: false
+    t.string "color", default: ""
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_category_groups_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name"
@@ -24,4 +34,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_27_223034) do
     t.string "remember_token"
   end
 
+  add_foreign_key "category_groups", "users"
 end
