@@ -8,6 +8,10 @@ class CategoryGroupsController < ApplicationController
     render json: { types: category_types }
   end
 
+  def index
+    render json: { category_groups: @current_user.category_groups }
+  end
+
   def show
     category_group = CategoryGroup.find(params[:id])
 

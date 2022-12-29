@@ -13,6 +13,18 @@ RSpec.describe CategoryGroupsController, type: :controller do
     end
   end
 
+  describe "GET index" do
+    let!(:category_group1) { create(:category_group, user: user) }
+    let!(:category_group2) { create(:category_group, user: user) }
+
+    it "returns all category groups from user" do
+      response = get :index, params: params
+      category_groups = JSON.parse(response.body)["category_groups"]
+
+      expect(category_groups.count).to eq(2)
+    end
+  end
+
   describe "GET show" do
     context "when category group exists" do
       let(:category_group) { create(:category_group) }
