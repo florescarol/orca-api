@@ -5,6 +5,42 @@ RSpec.describe CategoriesController, type: :controller do
   let!(:remember_token) { user.generate_remember_token!(password: user.password) }
   let!(:params) { { session_token: remember_token } }
 
+  describe "GET index" do
+    let!(:category_group) { create(:category_group, user: user) }
+    let!(:category1) { create(:category, category_group: category_group) }
+    let!(:category2) { create(:category, category_group: category_group) }
+
+    let(:expected_data) do
+      {
+        "grouped_categories" => [
+          {
+            "id" => category_group.id,
+            "title" => category_group.title,
+            "color" => category_group.color,
+            "category_type" => category_group.category_type,
+            "categories" => [
+              {
+                "id" => category1.id,
+                "name" => category1.name
+              },
+              {
+                "id" => category2.id,
+                "name" => category2.name
+              }
+            ]
+          }
+        ]
+      }
+    end
+
+    it "returns user categories grouped" do
+      response = get :index, params: params
+      data = JSON.parse(response.body)
+
+      expect(data).to eq(expected_data)
+    end
+  end
+
   describe "GET show" do
     context "when category exists" do
       let(:category) { create(:category) }
@@ -95,5 +131,3 @@ RSpec.describe CategoriesController, type: :controller do
     end
   end
 end
-
-

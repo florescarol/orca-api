@@ -1,5 +1,12 @@
 class CategoriesController < ApplicationController
 
+  def index
+    category_groups = @current_user.category_groups.order(:title)
+    grouped_categories = map_category_groups(category_groups)
+
+    render json: { grouped_categories: grouped_categories }
+  end
+
   def show
     category = Category.find(params[:id])
 
@@ -33,8 +40,20 @@ class CategoriesController < ApplicationController
     ])[:category]
   end
 
-  def set_category_groups
-    @category_groups = @current_user.category_groups.map {|cat| [cat.title, cat.id]}
+  def map_category_groups(groups)
+    groups.map do |group|
+      {
+        id: group.id,
+        title: group.title,
+        color: group.color,
+        category_type: group.category_type,
+        categories: map_categories(group.categories)
+      }
+    end
+  end
+
+  def map_categories(categories)
+    categories.map { |category| { id: category.id, name: category.name }}
   end
 
 end

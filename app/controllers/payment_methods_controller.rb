@@ -1,5 +1,13 @@
 class PaymentMethodsController < ApplicationController
 
+  def index
+    payment_methods = @current_user.payment_methods.order(:name).map do |method|
+      { id: method.id, name: method.name }
+    end
+
+    render json: { payment_methods: payment_methods }
+  end
+
   def show
     payment_method = PaymentMethod.find(params[:id])
 

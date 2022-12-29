@@ -5,6 +5,27 @@ RSpec.describe PaymentMethodsController, type: :controller do
   let!(:remember_token) { user.generate_remember_token!(password: user.password) }
   let!(:params) { { session_token: remember_token } }
 
+  describe "GET index" do
+    let!(:payment_method1) { create(:payment_method, user: user) }
+    let!(:payment_method2) { create(:payment_method, user: user) }
+
+    let(:expected_data) do
+      {
+        "payment_methods" => [
+          { "id" => payment_method1.id, "name" => payment_method1.name},
+          { "id" => payment_method2.id, "name" => payment_method2.name}
+        ]
+      }
+    end
+
+    it "returns user payment methods" do
+      response = get :index, params: params
+      data = JSON.parse(response.body)
+
+      expect(data).to eq(expected_data)
+    end
+  end
+
   describe "GET show" do
     context "when payment_method exists" do
       let(:payment_method) { create(:payment_method) }
@@ -86,5 +107,3 @@ RSpec.describe PaymentMethodsController, type: :controller do
     end
   end
 end
-
-
