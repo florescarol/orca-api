@@ -19,6 +19,22 @@ class ExpensesController < ApplicationController
     render json: { message: e.message }, status: :bad_request
   end
 
+  def update
+    validate_params!(expense_params)
+
+    @expense = Expense.find(params[:id])
+
+    if @expense.paid_in_installments? || expense_params[:installments_number].to_i != 1
+      update_expense_with_installments
+    else
+      @expense.update!(expense_params)
+    end
+
+    render json: { message: "Despesa atualizada com sucesso." }
+  rescue => e
+    render json: { message: e.message }, status: :bad_request
+  end
+
   private
 
   def expense_params
@@ -37,6 +53,11 @@ class ExpensesController < ApplicationController
   def create_installments
     use_case = ::CreateExpenseInstallments.build
     use_case.execute(expense_id: @expense.id)
+  end
+
+  def update_expense_with_installments
+    use_case = ::UpdateExpenseWithInstallments.build
+    use_case.execute(expense_id: @expense.id, params: expense_params)
   end
 
 end

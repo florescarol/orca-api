@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   resources :payment_methods, only: [:index, :show, :update, :create]
 
-  resources :expenses, only: [:show, :create]
+  resources :expenses, only: [:show, :update, :create]
 
   root "teste#index"
 end

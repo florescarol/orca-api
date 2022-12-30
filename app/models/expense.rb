@@ -12,4 +12,8 @@ class Expense < ActiveRecord::Base
     self.installments_number > 1
   end
 
+  def installments
+    Expense.where(first_installment_id: self.id)
+  end
+
 end
