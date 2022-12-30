@@ -12,6 +12,22 @@ class Expense < ActiveRecord::Base
     self.installments_number > 1
   end
 
+  def payment_method_name
+    self.payment_method.name
+  end
+
+  def formatted_amount
+    "R$%.2f" % self.amount
+  end
+
+  def formatted_date
+    self.date.strftime("%d/%m/%Y")
+  end
+
+  def formatted_payment_date
+    self.payment_date.strftime("%d/%m/%Y")
+  end
+
   def installments
     Expense.where(first_installment_id: self.id)
   end

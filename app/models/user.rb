@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :category_groups, class_name: "CategoryGroup", foreign_key: "user_id"
   has_many :payment_methods, class_name: "PaymentMethod", foreign_key: "user_id"
+  has_many :expenses, class_name: "Expense"
 
   validates :name, presence: true
   validates :username, presence: true, uniqueness: true, length: { maximum: 20 }
