@@ -16,6 +16,10 @@ class Expense < ActiveRecord::Base
     self.payment_method.name
   end
 
+  def category_name
+    self.category.name
+  end
+
   def formatted_amount
     "R$%.2f" % self.amount
   end
