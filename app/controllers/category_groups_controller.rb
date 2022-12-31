@@ -9,7 +9,7 @@ class CategoryGroupsController < ApplicationController
   end
 
   def index
-    render json: { category_groups: @current_user.category_groups }
+    render json: { category_groups: @current_user.category_groups.order(:title) }
   end
 
   def show
