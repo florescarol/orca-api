@@ -53,7 +53,7 @@ class CategoriesController < ApplicationController
   end
 
   def map_categories(categories)
-    categories.map { |category| { id: category.id, name: category.name }}
+    categories.order(:name).map { |category| { id: category.id, name: category.name }}
   end
 
 end
