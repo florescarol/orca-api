@@ -8,6 +8,21 @@ class Expense < ActiveRecord::Base
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 1 }
 
+  scope :by_date_period, -> (start_date, end_date) {
+    period = start_date&.to_date..end_date&.to_date
+    where(date: period)
+  }
+
+  scope :by_payment_date_period, -> (start_date, end_date) {
+    period = start_date&.to_date..end_date&.to_date
+    where(payment_date: period)
+  }
+
+  scope :by_category_id, ->(id){
+    return if id.nil?
+    where(category_id: id)
+  }
+
   def paid_in_installments?
     self.installments_number > 1
   end

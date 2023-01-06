@@ -1,19 +1,37 @@
 class ReportsController < ApplicationController
   def expenses
     expenses = @current_user.expenses
-    grouped_expenses = group_by_categories(expenses)
+    filtered_expenses = filter_expenses(expenses)
+    grouped_expenses = group_by_categories(filtered_expenses)
 
     render json: { grouped_expenses: grouped_expenses }
   end
 
   def payment_methods
     expenses = @current_user.expenses
-    grouped_expenses = group_by_payment_method(expenses)
+    filtered_expenses = filter_expenses(expenses)
+    grouped_expenses = group_by_payment_method(filtered_expenses)
 
     render json: { grouped_expenses: grouped_expenses }
   end
 
   private
+
+  def filter_params
+    params.permit(:start_date, :end_date, :payment_start_date, :payment_end_date, :category_id)
+  end
+
+  def filter_expenses(expenses)
+    expenses = filter_by_date_and_category(expenses)
+    expenses = expenses.by_payment_date_period(filter_params[:payment_start_date], filter_params[:payment_end_date])
+    expenses
+  end
+
+  def filter_by_date_and_category(transactions)
+    transactions = transactions.by_date_period(filter_params[:start_date], filter_params[:end_date])
+    transactions = transactions.by_category_id(filter_params[:category_id])
+    transactions
+  end
 
   def group_by_categories(transactions)
     transactions.sort_by(&:date).group_by(&:category_group).map do |group, expenses|
