@@ -1,4 +1,13 @@
 class ReportsController < ApplicationController
+
+  def earnings
+    earnings = @current_user.earnings
+    filtered_earnings = filter_by_date_and_category(earnings)
+    grouped_earnings = group_earnings(filtered_earnings)
+
+    render json: { grouped_earnings: grouped_earnings }
+  end
+
   def expenses
     expenses = @current_user.expenses
     filtered_expenses = filter_expenses(expenses)
@@ -31,6 +40,29 @@ class ReportsController < ApplicationController
     transactions = transactions.by_date_period(filter_params[:start_date], filter_params[:end_date])
     transactions = transactions.by_category_id(filter_params[:category_id])
     transactions
+  end
+
+  def group_earnings(earnings)
+    earnings.sort_by(&:date).group_by(&:category_group).map do |group, earnings|
+      [
+        { title: group.title, color: group.color },
+        earnings.group_by(&:category).map do |category, earnings|
+          {
+            name: category.name,
+            earnings: earnings.map do |earning|
+              {
+                id: earning.id,
+                name: earning.name,
+                amount: earning.formatted_amount,
+                date: earning.formatted_date,
+                category_name: earning.category_name,
+                category_group: earning.category_group_title
+              }
+            end
+          }
+        end
+      ]
+    end
   end
 
   def group_by_categories(transactions)

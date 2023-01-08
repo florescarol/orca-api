@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :sessions, only: [:create]
 
+  get "reports/earnings", to: "reports#earnings"
   get "reports/expenses", to: "reports#expenses"
   get "reports/payment_methods", to: "reports#payment_methods"
 

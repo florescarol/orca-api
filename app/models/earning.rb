@@ -21,8 +21,16 @@ class Earning < ApplicationRecord
     self.category.name
   end
 
+  def category_group_title
+    self.category_group.title
+  end
+
   def formatted_date
     self.date.strftime("%d/%m/%Y")
+  end
+
+  def formatted_amount
+    ("R$%.2f" % self.amount).gsub(".",",")
   end
 
 end
