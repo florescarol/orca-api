@@ -48,13 +48,13 @@ class ReportsController < ApplicationController
   end
 
   def group_by_payment_method(expenses)
-    expenses.sort_by(&:date).group_by(&:payment_method).map do |method, expenses|
+    expenses.sort_by(&:payment_date).group_by(&:payment_date).map do |date, expenses|
       [
-        { payment_method: method.name },
-        expenses.group_by(&:payment_date).map do |date, expenses|
+        { payment_date: date.strftime("%d/%m/%Y") },
+        expenses.group_by(&:payment_method).map do |method, expenses|
           {
-            payment_date: date.strftime("%d/%m/%Y"),
-            total_amount: "R$%.2f" % expenses.sum(&:amount),
+            payment_method: method.name,
+            total_amount: ("R$%.2f" % expenses.sum(&:amount)).gsub(".",","),
             expenses: map_expenses(expenses)
           }
         end
@@ -63,7 +63,7 @@ class ReportsController < ApplicationController
   end
 
   def map_expenses(expenses)
-    expenses.map do |expense|
+    expenses.sort_by(&:date).map do |expense|
       {
         id: expense.id,
         name: expense.name,
@@ -72,7 +72,8 @@ class ReportsController < ApplicationController
         date: expense.formatted_date,
         payment_date: expense.formatted_payment_date,
         payment_method_name: expense.payment_method_name,
-        category_name: expense.category_name
+        category_name: expense.category_name,
+        category_group: expense.category_group_title
       }
     end
   end
