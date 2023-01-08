@@ -6,10 +6,49 @@ RSpec.describe CategoriesController, type: :controller do
   let!(:params) { { session_token: remember_token } }
 
   describe "GET index" do
-    context "when category type is invalid" do
-      it "returns bad request" do
+    context "when no category type is selected" do
+      let!(:expense_category_group) { create(:category_group, user: user) }
+      let!(:category1) { create(:category, category_group: expense_category_group) }
+
+      let!(:earning_category_group) { create(:category_group, :earning, user: user) }
+      let!(:category2) { create(:category, category_group: earning_category_group) }
+
+      let(:expected_data) do
+        {
+          "grouped_categories" => [
+            {
+              "id" => expense_category_group.id,
+              "title" => expense_category_group.title,
+              "color" => expense_category_group.color,
+              "category_type" => expense_category_group.category_type,
+              "categories" => [
+                {
+                  "id" => category1.id,
+                  "name" => category1.name
+                }
+              ]
+            },
+            {
+              "id" => earning_category_group.id,
+              "title" => earning_category_group.title,
+              "color" => earning_category_group.color,
+              "category_type" => earning_category_group.category_type,
+              "categories" => [
+                {
+                  "id" => category2.id,
+                  "name" => category2.name
+                }
+              ]
+            }
+          ]
+        }
+      end
+
+      it "returns all categories" do
         response = get :index, params: params
-        expect(response.status).to eq(400)
+        data = JSON.parse(response.body)
+
+        expect(data).to eq(expected_data)
       end
     end
 
