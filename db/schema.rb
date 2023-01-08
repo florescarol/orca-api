@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_30_002813) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_06_223857) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -30,6 +30,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_30_002813) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_category_groups_on_user_id"
+  end
+
+  create_table "earnings", force: :cascade do |t|
+    t.string "name", null: false
+    t.float "amount", null: false
+    t.date "date", null: false
+    t.bigint "category_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_earnings_on_category_id"
+    t.index ["user_id"], name: "index_earnings_on_user_id"
   end
 
   create_table "expenses", force: :cascade do |t|
@@ -69,6 +81,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_30_002813) do
 
   add_foreign_key "categories", "category_groups"
   add_foreign_key "category_groups", "users"
+  add_foreign_key "earnings", "categories"
+  add_foreign_key "earnings", "users"
   add_foreign_key "expenses", "categories"
   add_foreign_key "expenses", "payment_methods"
   add_foreign_key "expenses", "users"

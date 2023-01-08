@@ -13,5 +13,7 @@ Rails.application.routes.draw do
 
   resources :expenses, only: [:show, :update, :create]
 
+  resources :earnings, only: [:show, :update, :create]
+
   root "teste#index"
 end
