@@ -31,12 +31,16 @@ class Expense < ActiveRecord::Base
     self.payment_method.name
   end
 
+  def category_group_title
+    self.category_group.title
+  end
+
   def category_name
     self.category.name
   end
 
   def formatted_amount
-    "R$%.2f" % self.amount
+    ("R$%.2f" % self.amount).gsub(".",",")
   end
 
   def formatted_date
