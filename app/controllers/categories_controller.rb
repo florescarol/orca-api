@@ -1,10 +1,15 @@
 class CategoriesController < ApplicationController
 
   def index
-    category_groups = @current_user.category_groups.order(:title)
-    grouped_categories = map_category_groups(category_groups)
+    validate_category_type!
+
+    category_groups = @current_user.category_groups
+    filtered_groups = category_groups.where(category_type: category_type).order(:title)
+    grouped_categories = map_category_groups(filtered_groups)
 
     render json: { grouped_categories: grouped_categories }
+  rescue => e
+    render json: { message: e.message }, status: :bad_request
   end
 
   def show
@@ -34,10 +39,18 @@ class CategoriesController < ApplicationController
 
   private
 
+  def category_type
+    params.permit(:type)[:type]
+  end
+
   def category_params
     params.permit(category: [
       :name, :category_group_id
     ])[:category]
+  end
+
+  def validate_category_type!
+    raise InvalidCategoryTypeException.new unless CATEGORY_TYPES::ALL.include?(category_type)
   end
 
   def map_category_groups(groups)

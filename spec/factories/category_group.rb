@@ -4,5 +4,9 @@ FactoryBot.define do
 
     title { "Alimentação" }
     category_type { "expense" }
+
+    trait :earning do
+      category_type { "earning" }
+    end
   end
 end

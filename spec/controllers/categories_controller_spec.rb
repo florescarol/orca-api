@@ -6,38 +6,81 @@ RSpec.describe CategoriesController, type: :controller do
   let!(:params) { { session_token: remember_token } }
 
   describe "GET index" do
-    let!(:category_group) { create(:category_group, user: user) }
-    let!(:category1) { create(:category, category_group: category_group) }
-    let!(:category2) { create(:category, category_group: category_group) }
-
-    let(:expected_data) do
-      {
-        "grouped_categories" => [
-          {
-            "id" => category_group.id,
-            "title" => category_group.title,
-            "color" => category_group.color,
-            "category_type" => category_group.category_type,
-            "categories" => [
-              {
-                "id" => category1.id,
-                "name" => category1.name
-              },
-              {
-                "id" => category2.id,
-                "name" => category2.name
-              }
-            ]
-          }
-        ]
-      }
+    context "when category type is invalid" do
+      it "returns bad request" do
+        response = get :index, params: params
+        expect(response.status).to eq(400)
+      end
     end
 
-    it "returns user categories grouped" do
-      response = get :index, params: params
-      data = JSON.parse(response.body)
+    context "when category type is 'expense'" do
+      let!(:expense_category_group) { create(:category_group, user: user) }
+      let!(:category1) { create(:category, category_group: expense_category_group) }
+      let!(:category2) { create(:category, category_group: expense_category_group) }
+      let(:expected_data) do
+        {
+          "grouped_categories" => [
+            {
+              "id" => expense_category_group.id,
+              "title" => expense_category_group.title,
+              "color" => expense_category_group.color,
+              "category_type" => expense_category_group.category_type,
+              "categories" => [
+                {
+                  "id" => category1.id,
+                  "name" => category1.name
+                },
+                {
+                  "id" => category2.id,
+                  "name" => category2.name
+                }
+              ]
+            }
+          ]
+        }
+      end
 
-      expect(data).to eq(expected_data)
+      it "returns user expenses categories grouped" do
+        response = get :index, params: params.merge!({ type: "expense" })
+        data = JSON.parse(response.body)
+
+        expect(data).to eq(expected_data)
+      end
+    end
+
+    context "when category type is 'earning'" do
+      let!(:earning_category_group) { create(:category_group, :earning, user: user) }
+      let!(:category1) { create(:category, category_group: earning_category_group) }
+      let!(:category2) { create(:category, category_group: earning_category_group) }
+      let(:expected_data) do
+        {
+          "grouped_categories" => [
+            {
+              "id" => earning_category_group.id,
+              "title" => earning_category_group.title,
+              "color" => earning_category_group.color,
+              "category_type" => earning_category_group.category_type,
+              "categories" => [
+                {
+                  "id" => category1.id,
+                  "name" => category1.name
+                },
+                {
+                  "id" => category2.id,
+                  "name" => category2.name
+                }
+              ]
+            }
+          ]
+        }
+      end
+
+      it "returns user earnings categories grouped" do
+        response = get :index, params: params.merge!({ type: "earning" })
+        data = JSON.parse(response.body)
+
+        expect(data).to eq(expected_data)
+      end
     end
   end
 
