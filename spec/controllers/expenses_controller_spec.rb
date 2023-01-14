@@ -131,6 +131,38 @@ RSpec.describe ExpensesController, type: :controller do
       end
     end
 
+    context "when expense is an installment" do
+      let(:expense) { create(:expense, user: user, installments_number: 2) }
+      let(:installment) { expense.dup }
+      let(:new_category_id) { create(:category).id }
+      let(:update_params) do
+        {
+          id: installment.id,
+          expense: {
+            name: installment.name,
+            amount: installment.amount,
+            date: installment.date,
+            payment_date: installment.payment_date,
+            category_id: new_category_id,
+            payment_method_id: installment.payment_method_id,
+            installments_number: installment.installments_number
+          }
+        }
+      end
+
+      before do
+        installment.update!(first_installment_id: expense.id)
+      end
+
+      it "does not allow to edit expenses" do
+        message = "Não é possível editar uma parcela."
+
+        response = patch :update, params: params.merge(update_params)
+
+        expect(response.status).to eq(405)
+      end
+    end
+
     context "when adding installments to expense not paid in installments" do
       let!(:expense) { create(:expense, user: user) }
       let(:new_name) { "Nome novo" }

@@ -27,6 +27,10 @@ class Expense < ActiveRecord::Base
     self.installments_number > 1
   end
 
+  def installment?
+    self.first_installment_id.present?
+  end
+
   def payment_method_name
     self.payment_method.name
   end

@@ -24,6 +24,8 @@ class ExpensesController < ApplicationController
 
     @expense = Expense.find(params[:id])
 
+    raise_unable_to_edit_exception if @expense.installment?
+
     if @expense.paid_in_installments? || expense_params[:installments_number].to_i != 1
       update_expense_with_installments
     else
@@ -31,6 +33,8 @@ class ExpensesController < ApplicationController
     end
 
     render json: { message: "Despesa atualizada com sucesso." }
+  rescue UnableToEditExpenseException => e
+    render json: { message: e.message }, status: :method_not_allowed
   rescue => e
     render json: { message: e.message }, status: :bad_request
   end
@@ -58,6 +62,11 @@ class ExpensesController < ApplicationController
   def update_expense_with_installments
     use_case = ::UpdateExpenseWithInstallments.build
     use_case.execute(expense_id: @expense.id, params: expense_params)
+  end
+
+  def raise_unable_to_edit_exception
+    message = "Não é possível editar uma parcela."
+    raise UnableToEditExpenseException.new(message)
   end
 
 end
