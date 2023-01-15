@@ -66,10 +66,10 @@ class ReportsController < ApplicationController
   end
 
   def group_by_categories(transactions)
-    transactions.sort_by(&:date).group_by(&:category_group).map do |group, expenses|
+    transactions.sort_by(&:category_group_title).group_by(&:category_group).map do |group, expenses|
       [
         { title: group.title, color: group.color },
-        expenses.group_by(&:category).map do |category, expenses|
+        expenses.sort_by(&:category_name).group_by(&:category).map do |category, expenses|
           {
             name: category.name,
             expenses: map_expenses(expenses)
