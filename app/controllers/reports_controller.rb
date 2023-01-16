@@ -101,6 +101,7 @@ class ReportsController < ApplicationController
         name: expense.name,
         amount: expense.formatted_amount,
         installments_number: expense.installments_number,
+        is_installment: expense.installment?,
         date: expense.formatted_date,
         payment_date: expense.formatted_payment_date,
         payment_method_name: expense.payment_method_name,
