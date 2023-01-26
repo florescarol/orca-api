@@ -16,5 +16,4 @@ Rails.application.routes.draw do
 
   resources :earnings, only: [:show, :update, :create]
 
-  root "teste#index"
 end
