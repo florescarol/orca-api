@@ -24,7 +24,6 @@ module OrcaApi
     config.load_defaults 7.0
 
     config.time_zone = "Brasilia"
-    config.i18n.default_locale = "pt-BR"
 
     config.autoloader = :classic
 
