@@ -4,36 +4,42 @@ class ExpensesReportsPresenter < BasePresenter
   end
 
   def group_by_categories
-    @expenses.sort_by(&:category_group_title).group_by(&:category_group).map do |group, expenses|
-      {
-        title: group.title,
-        color: group.color,
-        total_amount: number_to_currency_br(expenses.sum(&:amount)),
-        categories: expenses.sort_by(&:category_name).group_by(&:category).map do |category, expenses|
-          {
-            name: category.name,
-            total_amount: number_to_currency_br(expenses.sum(&:amount)),
-            expenses: map_expenses(expenses)
-          }
-        end
-      }
-    end
+    {
+      total_amount: number_to_currency_br(@expenses.sum(&:amount)),
+      expenses: @expenses.sort_by(&:category_group_title).group_by(&:category_group).map do |group, expenses|
+        {
+          title: group.title,
+          color: group.color,
+          total_amount: number_to_currency_br(expenses.sum(&:amount)),
+          categories: expenses.sort_by(&:category_name).group_by(&:category).map do |category, expenses|
+            {
+              name: category.name,
+              total_amount: number_to_currency_br(expenses.sum(&:amount)),
+              expenses: map_expenses(expenses)
+            }
+          end
+        }
+      end
+    }
   end
 
   def group_by_payment_method
-    @expenses.sort_by(&:payment_date).group_by(&:payment_date).map do |date, expenses|
-      {
-        payment_date: format_date(date),
-        total_amount: number_to_currency_br(expenses.sum(&:amount)),
-        payment_methods: expenses.group_by(&:payment_method).map do |method, expenses|
-          {
-            name: method.name,
-            total_amount: number_to_currency_br(expenses.sum(&:amount)),
-            expenses: map_expenses(expenses)
-          }
-        end
-      }
-    end
+    {
+      total_amount: number_to_currency_br(@expenses.sum(&:amount)),
+      expenses: @expenses.sort_by(&:payment_date).group_by(&:payment_date).map do |date, expenses|
+        {
+          payment_date: format_date(date),
+          total_amount: number_to_currency_br(expenses.sum(&:amount)),
+          payment_methods: expenses.group_by(&:payment_method).map do |method, expenses|
+            {
+              name: method.name,
+              total_amount: number_to_currency_br(expenses.sum(&:amount)),
+              expenses: map_expenses(expenses)
+            }
+          end
+        }
+      end
+    }
   end
 
   def map_expenses(expenses)
