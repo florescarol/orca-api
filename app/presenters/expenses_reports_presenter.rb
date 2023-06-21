@@ -8,6 +8,7 @@ class ExpensesReportsPresenter < BasePresenter
       total_amount: number_to_currency_br(@expenses.sum(&:amount)),
       expenses: @expenses.sort_by(&:category_group_title).group_by(&:category_group).map do |group, expenses|
         {
+          id: group.id,
           title: group.title,
           color: group.color,
           total_amount: number_to_currency_br(expenses.sum(&:amount)),
