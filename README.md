@@ -1,24 +1,5 @@
-# README
+# Orca API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+🚧 Orca API is a Ruby on Rails application currently under development. 🚧
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This project is the backend of a personal finances manager system. It provides endpoints to manage expenses and earnings.
