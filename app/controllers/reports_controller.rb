@@ -1,5 +1,4 @@
 class ReportsController < ApplicationController
-
   def earnings
     earnings = @current_user.earnings
     filtered_earnings = filter_by_date_and_category(earnings)
@@ -27,7 +26,7 @@ class ReportsController < ApplicationController
   private
 
   def filter_params
-    params.permit(:start_date, :end_date, :payment_start_date, :payment_end_date, :category_id)
+    params.permit(:start_date, :end_date, :payment_start_date, :payment_end_date, :category_group_id, :category_id)
   end
 
   def filter_expenses(expenses)
@@ -38,8 +37,8 @@ class ReportsController < ApplicationController
 
   def filter_by_date_and_category(transactions)
     transactions = transactions.by_date_period(filter_params[:start_date], filter_params[:end_date])
+    transactions = transactions.by_category_group_id(filter_params[:category_group_id])
     transactions = transactions.by_category_id(filter_params[:category_id])
     transactions
   end
-
 end

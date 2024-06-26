@@ -3,7 +3,7 @@ class Expense < ActiveRecord::Base
   belongs_to :category, class_name: "Category"
   belongs_to :payment_method, class_name: "PaymentMethod"
 
-  delegate :category_group, to: :category
+  has_one :category_group, through: :category
 
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 1 }
@@ -21,6 +21,11 @@ class Expense < ActiveRecord::Base
   scope :by_category_id, ->(id){
     return if id.nil?
     where(category_id: id)
+  }
+
+  scope :by_category_group_id, ->(id){
+    return if id.nil?
+    includes(:category_group).where(category_group: { id: id })
   }
 
   def paid_in_installments?

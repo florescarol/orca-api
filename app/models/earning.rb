@@ -2,7 +2,7 @@ class Earning < ApplicationRecord
   belongs_to :user, class_name: "User"
   belongs_to :category, class_name: "Category"
 
-  delegate :category_group, to: :category
+  has_one :category_group, through: :category
 
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 1 }
@@ -15,6 +15,11 @@ class Earning < ApplicationRecord
   scope :by_category_id, ->(id){
     return if id.nil?
     where(category_id: id)
+  }
+
+  scope :by_category_group_id, ->(id){
+    return if id.nil?
+    includes(:category_group).where(category_group: { id: id })
   }
 
   def category_name
