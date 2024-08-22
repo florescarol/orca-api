@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   private
 
   def remember_token
-    params[:session_token]
+    params[:session_token] || request.headers["Authorization"]&.split(' ')&.last
   end
 
   def handle_unauthorized_request
