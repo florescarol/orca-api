@@ -19,7 +19,12 @@ class EarningsReportsPresenter < BasePresenter
                 id: earning.id,
                 name: earning.name,
                 amount: number_to_currency_br(earning.amount),
+                # TO DO: change amount_value to amount
+                # and amount to formatted_amount
+                # [ cant change now because of old frontend ]
+                amount_value: earning.amount,
                 date: format_date(earning.date),
+                category_id: earning.category_id,
                 category_name: earning.category_name,
                 category_group: earning.category_group_title
               }
