@@ -10,10 +10,12 @@ class EarningsReportsPresenter < BasePresenter
         title: group.title,
         color: group.color,
         total_amount: number_to_currency_br(earnings.sum(&:amount)),
+        total_amount_percentage: (earnings.sum(&:amount).to_f / @earnings.sum(&:amount) * 100).round(2),
         categories: earnings.group_by(&:category).map do |category, earnings|
           {
             name: category.name,
             total_amount: number_to_currency_br(earnings.sum(&:amount)),
+            total_amount_percentage: (earnings.sum(&:amount).to_f / @earnings.sum(&:amount) * 100).round(2),
             earnings: earnings.map do |earning|
               {
                 id: earning.id,
