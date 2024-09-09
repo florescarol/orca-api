@@ -65,7 +65,8 @@ class ExpensesReportsPresenter < BasePresenter
         payment_method_name: expense.payment_method_name,
         category_id: expense.category_id,
         category_name: expense.category_name,
-        category_group: expense.category_group_title
+        category_group: expense.category_group_title,
+        category_group_color: expense.category_group.color
       }
     end
   end
